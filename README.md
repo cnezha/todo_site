@@ -12,7 +12,7 @@
 ## Используемые технологии
 
 * **Backend:** Flask, Python
-* **Frontend:** HTML, CSS (Bootstrap или кастомный стиль)
+* **Frontend:** HTML, CSS (tailwind.css)
 * **База данных:** PostgreSQL
 * **Дополнительно:** Werkzeug для хеширования паролей, dotenv для управления переменными окружения.
 
