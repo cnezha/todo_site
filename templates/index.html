@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow - Управление задачами</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white">
+  <!-- Header -->
+ <!-- Header -->
+<header class="bg-white shadow-sm fixed w-full z-10">
+  <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Лого -->
+      <a href="/" class="flex items-center">
+        <span class="text-2xl font-bold text-blue-600">TaskFlow</span>
+      </a>
+
+      <!-- Десктоп-меню -->
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="/login" class="text-gray-600 hover:text-blue-600 transition">Войти</a>
+        <a href="/signup" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          Регистрация
+        </a>
+      </div>
+
+      <!-- Мобильное меню (бургер) -->
+      <button id="burgerButton" class="md:hidden p-2 text-gray-600 hover:text-blue-600">
+        <svg id="burgerIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-16 6h16"/>
+        </svg>
+        <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Мобильное меню (скрытое по умолчанию) -->
+    <div id="mobileMenu" class="hidden md:hidden absolute top-16 left-0 right-0 bg-white border-t">
+      <div class="px-4 py-4 space-y-4">
+        <a href="/login" class="block text-gray-600 hover:text-blue-600">Войти</a>
+        <a href="/signup" class="block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          Регистрация
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+  <main class="pt-16 min-h-screen">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-50 to-indigo-50 py-20 px-4">
+      <div class="container mx-auto text-center max-w-4xl">
+        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+          Управляй задачами легко и эффективно
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-600 mb-8">
+          Планируйте, отслеживайте и выполняйте задачи в одном месте
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="/signup" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition text-lg font-medium">
+            Начать бесплатно
+          </a>
+          <a href="#features" class="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-50 transition text-lg font-medium">
+            Узнать больше
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Почему выбирают TaskFlow</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="featuresContainer"></div>
+      </div>
+    </section>
+
+    <!-- Demo Dashboard -->
+    <section class="bg-gray-50 py-16">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Пример рабочего пространства</h2>
+        <div class="bg-white rounded-xl shadow-lg p-6 mx-auto max-w-4xl" id="demoDashboard">
+          <div class="animate-pulse text-center py-8">Загрузка демо-интерфейса...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-white">
+      <div class="container mx-auto px-4 text-center">
+        <div class="bg-blue-600 rounded-2xl p-8 md:p-12 shadow-xl">
+          <h2 class="text-2xl md:text-3xl font-bold text-white mb-6">
+            Готовы начать? Присоединяйтесь к тысячам организованных пользователей!
+          </h2>
+          <a href="/signup" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-gray-100 transition text-lg font-medium">
+            Зарегистрироваться
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-50 border-t">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="mb-6 md:mb-0">
+          <h3 class="text-lg font-semibold mb-4">TaskFlow</h3>
+          <p class="text-gray-600 text-sm">
+            Ваш помощник в эффективном управлении задачами и проектами
+          </p>
+        </div>
+
+        <div class="mb-6 md:mb-0">
+          <h4 class="text-gray-800 font-medium mb-4">Навигация</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm">Документация</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm">Контакты</a></li>
+          </ul>
+        </div>
+
+        <div class="mb-6 md:mb-0">
+          <h4 class="text-gray-800 font-medium mb-4">Сообщество</h4>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-600 hover:text-blue-600">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.6.113.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-gray-800 font-medium mb-4">Контакты</h4>
+          <p class="text-gray-600 text-sm">support@taskflow.com</p>
+        </div>
+      </div>
+
+      <div class="border-t mt-8 pt-6 text-center">
+        <p class="text-gray-600 text-sm">
+          © 2024 TaskFlow. Все права защищены
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Features Data
+    const features = [
+      {
+        icon: '🚀',
+        title: 'Мгновенное создание задач',
+        text: 'Добавляйте новые задачи в пару кликов с любого устройства'
+      },
+      {
+        icon: '🎯',
+        title: 'Умная сортировка',
+        text: 'Автоматическая организация задач по приоритетам и срокам'
+      },
+      {
+        icon: '📊',
+        title: 'Визуальная аналитика',
+        text: 'Наглядные графики выполнения и прогресса задач'
+      },
+      {
+        icon: '🔒',
+        title: 'Безопасность данных',
+        text: 'Защищенное хранение и передача вашей информации'
+      }
+    ];
+
+    // Fill Features
+    document.getElementById('featuresContainer').innerHTML = features.map(feature => `
+      <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+        <div class="text-5xl mb-4">${feature.icon}</div>
+        <h3 class="text-xl font-semibold mb-3 text-gray-900">${feature.title}</h3>
+        <p class="text-gray-600 leading-relaxed">${feature.text}</p>
+      </div>
+    `).join('');
+
+    // Demo Tasks
+    const tasks = [
+      {title: 'Завершить проект', priority: 'high', date: '2024-05-25', done: false},
+      {title: 'Тестирование интерфейса', priority: 'medium', date: '2024-05-20', done: true},
+      {title: 'Обновить документацию', priority: 'low', date: '2024-05-22', done: false},
+      {title: 'Созвониться с командой', priority: 'medium', date: '2024-05-18', done: false}
+    ];
+
+    // Generate Demo Dashboard
+    document.getElementById('demoDashboard').innerHTML = `
+      <div class="space-y-4">
+        ${tasks.map(task => `
+          <div class="flex flex-col sm:flex-row items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition">
+            <div class="flex items-center gap-3 mb-2 sm:mb-0 w-full sm:w-auto">
+              <input type="checkbox" ${task.done ? 'checked' : ''} 
+                class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+              <span class="${task.done ? 'line-through text-gray-400' : 'text-gray-700'} truncate">
+                ${task.title}
+              </span>
+              <span class="px-2 py-1 text-sm rounded-full 
+                ${task.priority === 'high' ? 'bg-red-100 text-red-800' : 
+                 task.priority === 'medium' ? 'bg-orange-100 text-orange-800' : 
+                 'bg-green-100 text-green-800'}">
+                ${task.priority === 'high' ? 'Высокий' : 
+                 task.priority === 'medium' ? 'Средний' : 'Низкий'}
+              </span>
+            </div>
+            <span class="text-sm ${new Date(task.date) < new Date() ? 'text-red-600 font-medium' : 'text-gray-500'}">
+              ${new Date(task.date).toLocaleDateString('ru-RU', {day: 'numeric', month: 'long'})}
+            </span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  </script>
+  <script>
+  // Обработчик бургер-меню
+  const burgerButton = document.getElementById('burgerButton');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const burgerIcon = document.getElementById('burgerIcon');
+  const closeIcon = document.getElementById('closeIcon');
+
+  burgerButton.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('hidden');
+    
+    // Анимация иконок
+    burgerIcon.classList.toggle('hidden', !isOpen);
+    closeIcon.classList.toggle('hidden', isOpen);
+    
+    // Блокировка скролла
+    document.body.classList.toggle('overflow-hidden', !isOpen);
+  });
+
+  // Закрытие меню при клике вне области
+  document.addEventListener('click', (e) => {
+    if (!burgerButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+      mobileMenu.classList.add('hidden');
+      burgerIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+  });
+
+  // Закрытие меню при ресайзе
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) {
+      mobileMenu.classList.add('hidden');
+      burgerIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+  });
+</script>
+</body>
+</html>

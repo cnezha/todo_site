@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow - Панель управления</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white shadow-sm fixed w-full z-10">
+    <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <span class="text-xl font-semibold text-gray-900">
+            <i class="ri-dashboard-line mr-2 text-blue-600"></i>
+            Добрый день, <span class="text-blue-600">{{ user_name }}</span>!
+          </span>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <button 
+            id="newTaskButton"
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            <i class="ri-add-line"></i> Новая задача
+          </button>
+          <a 
+            href="/logout" 
+            class="text-gray-600 hover:text-red-600 transition"
+            title="Выйти">
+            <i class="ri-logout-box-r-line text-xl"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="pt-20 min-h-screen flex">
+    <!-- Фильтры (Десктоп) -->
+    <aside class="hidden md:block w-64 bg-white border-r p-4">
+      <div class="space-y-6">
+        <!-- Поиск -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Поиск</label>
+          <input 
+            type="text" 
+            id="searchInput"
+            placeholder="Найти задачу..."
+            class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Фильтры -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Статус</label>
+          <select 
+            id="statusFilter"
+            class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="all">Все</option>
+            <option value="active">Активные</option>
+            <option value="completed">Завершенные</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Приоритет</label>
+          <select 
+            id="priorityFilter"
+            class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="all">Все</option>
+            <option value="high">Высокий</option>
+            <option value="medium">Средний</option>
+            <option value="low">Низкий</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Сортировка</label>
+          <select 
+            id="sortBy"
+            class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="new">Сначала новые</option>
+            <option value="old">Сначала старые</option>
+            <option value="priority">По приоритету</option>
+          </select>
+        </div>
+
+        <button 
+          id="applyFilters"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+          Применить
+        </button>
+        <button 
+          id="resetFilters"
+          class="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition">
+          Сбросить
+        </button>
+      </div>
+    </aside>
+
+    <!-- Основной контент -->
+    <div class="flex-1 p-6">
+      <!-- Прогресс -->
+      <div class="bg-white rounded-xl p-4 mb-6 shadow-sm">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-medium">Выполнено: <span id="progressText">0%</span></span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2.5">
+          <div 
+            id="progressBar"
+            class="bg-blue-600 h-2.5 rounded-full transition-all" 
+            style="width: 0%">
+          </div>
+        </div>
+      </div>
+
+      <!-- Фильтры (Мобильные) -->
+      <div class="md:hidden mb-6">
+        <button 
+          id="mobileFilterButton"
+          class="w-full bg-white p-3 rounded-xl shadow-sm flex items-center justify-between">
+          <span>Фильтры и сортировка</span>
+          <i class="ri-arrow-down-s-line"></i>
+        </button>
+      </div>
+
+      <!-- Список задач -->
+      <div 
+        id="tasksContainer"
+        class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+        <!-- Задачи будут загружены через API -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Модальное окно фильтров (Мобильные) -->
+  <div 
+    id="mobileFilters"
+    class="fixed inset-0 bg-black bg-opacity-50 hidden z-20">
+    <div class="bg-white w-full max-w-xs h-full p-4 ml-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-lg font-medium">Фильтры</h3>
+        <button id="closeFilters">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="space-y-6">
+        <!-- Поиск -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Поиск</label>
+          <input 
+            type="text" 
+            id="mobileSearchInput"
+            placeholder="Найти задачу..."
+            class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Фильтры -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Статус</label>
+          <select 
+            id="mobileStatusFilter"
+            class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="all">Все</option>
+            <option value="active">Активные</option>
+            <option value="completed">Завершенные</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Приоритет</label>
+          <select 
+            id="mobilePriorityFilter"
+            class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="all">Все</option>
+            <option value="high">Высокий</option>
+            <option value="medium">Средний</option>
+            <option value="low">Низкий</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Сортировка</label>
+          <select 
+            id="mobileSortBy"
+            class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="new">Сначала новые</option>
+            <option value="old">Сначала старые</option>
+            <option value="priority">По приоритету</option>
+          </select>
+        </div>
+
+        <button 
+          id="mobileApplyFilters"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+          Применить
+        </button>
+        <button 
+          id="mobileResetFilters"
+          class="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition">
+          Сбросить
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно новой задачи -->
+  <div 
+    id="taskModal"
+    class="fixed inset-0 bg-black bg-opacity-50 hidden z-30 flex items-center justify-center">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold" id="modalTitle">Новая задача</h3>
+        <button id="closeModal">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+      
+      <form id="taskForm">
+        <input type="hidden" id="taskId">
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Название*</label>
+            <input 
+              type="text" 
+              id="taskTitle"
+              required
+              class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium mb-1">Описание</label>
+            <textarea 
+              id="taskDescription"
+              rows="3"
+              class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium mb-1">Приоритет*</label>
+            <select 
+              id="taskPriority"
+              required
+              class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <option value="high">Высокий</option>
+              <option value="medium" selected>Средний</option>
+              <option value="low">Низкий</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium mb-1">Срок выполнения</label>
+            <input 
+              type="date" 
+              id="taskDueDate"
+              class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+        
+        <div class="mt-6 flex justify-end space-x-3">
+          <button 
+            type="button"
+            id="cancelTask"
+            class="px-4 py-2 border rounded-lg hover:bg-gray-50 transition">
+            Отмена
+          </button>
+          <button 
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            Сохранить
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script>
+    // DOM элементы
+    const elements = {
+      tasksContainer: document.getElementById('tasksContainer'),
+      progressBar: document.getElementById('progressBar'),
+      progressText: document.getElementById('progressText'),
+      newTaskButton: document.getElementById('newTaskButton'),
+      taskModal: document.getElementById('taskModal'),
+      closeModal: document.getElementById('closeModal'),
+      cancelTask: document.getElementById('cancelTask'),
+      taskForm: document.getElementById('taskForm'),
+      modalTitle: document.getElementById('modalTitle'),
+      taskId: document.getElementById('taskId'),
+      taskTitle: document.getElementById('taskTitle'),
+      taskDescription: document.getElementById('taskDescription'),
+      taskPriority: document.getElementById('taskPriority'),
+      taskDueDate: document.getElementById('taskDueDate'),
+      searchInput: document.getElementById('searchInput'),
+      statusFilter: document.getElementById('statusFilter'),
+      priorityFilter: document.getElementById('priorityFilter'),
+      sortBy: document.getElementById('sortBy'),
+      applyFilters: document.getElementById('applyFilters'),
+      resetFilters: document.getElementById('resetFilters'),
+      mobileFilterButton: document.getElementById('mobileFilterButton'),
+      mobileFilters: document.getElementById('mobileFilters'),
+      closeFilters: document.getElementById('closeFilters'),
+      mobileSearchInput: document.getElementById('mobileSearchInput'),
+      mobileStatusFilter: document.getElementById('mobileStatusFilter'),
+      mobilePriorityFilter: document.getElementById('mobilePriorityFilter'),
+      mobileSortBy: document.getElementById('mobileSortBy'),
+      mobileApplyFilters: document.getElementById('mobileApplyFilters'),
+      mobileResetFilters: document.getElementById('mobileResetFilters')
+    };
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+      setupEventListeners();
+      loadTasks();
+      loadStats();
+    });
+
+    // Загрузка задач
+    async function loadTasks() {
+      try {
+        const params = new URLSearchParams({
+          search: elements.searchInput.value,
+          status: elements.statusFilter.value,
+          priority: elements.priorityFilter.value,
+          sort: elements.sortBy.value
+        });
+        
+        const response = await fetch(`/api/tasks?${params}`);
+        if (!response.ok) throw new Error('Ошибка загрузки задач');
+        const tasks = await response.json();
+        renderTasks(tasks);
+      } catch (error) {
+        showError(error.message);
+      }
+    }
+
+    // Загрузка статистики
+    async function loadStats() {
+      try {
+        const response = await fetch('/api/stats');
+        if (!response.ok) throw new Error('Ошибка загрузки статистики');
+        const stats = await response.json();
+        updateProgress(stats);
+      } catch (error) {
+        showError(error.message);
+      }
+    }
+
+    // Отрисовка задач
+    function renderTasks(tasks) {
+      elements.tasksContainer.innerHTML = tasks.map(task => `
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition">
+          <div class="flex justify-between items-start mb-2">
+            <div class="flex items-center gap-2">
+              <button 
+                class="p-1 hover:bg-gray-100 rounded"
+                onclick="toggleTaskCompletion(${task.id}, ${task.completed})">
+                <i class="ri-${task.completed ? 'checkbox-circle' : 'checkbox-blank-circle'}-line 
+                  ${task.completed ? 'text-green-600' : 'text-gray-400'}"></i>
+              </button>
+              <h3 class="font-medium ${task.completed ? 'line-through text-gray-400' : ''}">
+                ${task.title}
+              </h3>
+            </div>
+            <span class="px-2 py-1 text-xs rounded-full 
+              ${task.priority === 'high' ? 'bg-red-100 text-red-800' : 
+               task.priority === 'medium' ? 'bg-orange-100 text-orange-800' : 
+               'bg-green-100 text-green-800'}">
+              ${task.priority === 'high' ? '🔴 Высокий' : 
+               task.priority === 'medium' ? '🟠 Средний' : '🟢 Низкий'}
+            </span>
+          </div>
+          
+          <p class="text-gray-600 text-sm mb-4 line-clamp-2">${task.description || ''}</p>
+          
+          <div class="flex justify-between items-center">
+            <span class="text-xs ${new Date(task.due_date) < new Date() && !task.completed ? 'text-red-600' : 'text-gray-500'}">
+              ${task.completed ? 'Завершено' : 
+                task.due_date && new Date(task.due_date) < new Date() ? 'Просрочено' : 
+                task.due_date ? 'До ' + new Date(task.due_date).toLocaleDateString('ru-RU') : 'Без срока'}
+            </span>
+            <div class="flex gap-2">
+              <button 
+                class="text-blue-600 hover:text-blue-800"
+                onclick="editTask(${task.id})">
+                <i class="ri-edit-line"></i>
+              </button>
+              <button 
+                class="text-red-600 hover:text-red-800"
+                onclick="deleteTask(${task.id})">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Обновление прогресса
+    function updateProgress(stats) {
+      const percent = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+      elements.progressBar.style.width = `${percent}%`;
+      elements.progressText.textContent = `${percent}% (${stats.completed} из ${stats.total})`;
+    }
+
+    // Переключение статуса задачи
+    async function toggleTaskCompletion(id, currentStatus) {
+      try {
+        // Получаем всю задачу
+        const getResponse = await fetch(`/api/tasks/${id}`);
+        if (!getResponse.ok) throw new Error('Ошибка загрузки задачи');
+    
+        const task = await getResponse.json();
+        task.completed = !currentStatus;
+    
+        const putResponse = await fetch(`/api/tasks/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(task)
+        });
+    
+        if (!putResponse.ok) throw new Error('Ошибка обновления');
+        await Promise.all([loadTasks(), loadStats()]);
+      } catch (error) {
+        showError(error.message);
+      }
+    }
+
+
+    // Редактирование задачи
+    async function editTask(id) {
+      try {
+        const response = await fetch(`/api/tasks/${id}`);
+        if (!response.ok) throw new Error('Ошибка загрузки задачи');
+        const task = await response.json();
+        
+        elements.modalTitle.textContent = 'Редактировать задачу';
+        elements.taskId.value = task.id;
+        elements.taskTitle.value = task.title;
+        elements.taskDescription.value = task.description || '';
+        elements.taskPriority.value = task.priority;
+        elements.taskDueDate.value = task.due_date?.split('T')[0] || '';
+        elements.taskModal.classList.remove('hidden');
+      } catch (error) {
+        showError(error.message);
+      }
+    }
+
+    // Удаление задачи
+    async function deleteTask(id) {
+      if(confirm('Удалить задачу?')) {
+        try {
+          const response = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+          if (!response.ok) throw new Error('Ошибка удаления');
+          await Promise.all([loadTasks(), loadStats()]);
+        } catch (error) {
+          showError(error.message);
+        }
+      }
+    }
+
+    // Обработчики событий
+    function setupEventListeners() {
+      // Форма задачи
+      elements.taskForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const taskData = {
+          title: elements.taskTitle.value,
+          description: elements.taskDescription.value,
+          priority: elements.taskPriority.value,
+          dueDate: elements.taskDueDate.value || null
+        };
+
+        try {
+          const method = elements.taskId.value ? 'PUT' : 'POST';
+          const url = elements.taskId.value 
+            ? `/api/tasks/${elements.taskId.value}`
+            : '/api/tasks';
+
+          const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(taskData)
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error);
+          }
+
+          elements.taskModal.classList.add('hidden');
+          await Promise.all([loadTasks(), loadStats()]);
+        } catch (error) {
+          showError(error.message);
+        }
+      });
+
+      // Фильтры
+      [elements.applyFilters, elements.mobileApplyFilters].forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          loadTasks();
+        });
+      });
+
+      [elements.resetFilters, elements.mobileResetFilters].forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          elements.searchInput.value = '';
+          elements.statusFilter.value = 'all';
+          elements.priorityFilter.value = 'all';
+          elements.sortBy.value = 'new';
+          loadTasks();
+        });
+      });
+
+      // Модальные окна
+      elements.newTaskButton.addEventListener('click', () => {
+        elements.taskForm.reset();
+        elements.modalTitle.textContent = 'Новая задача';
+        elements.taskId.value = '';
+        elements.taskModal.classList.remove('hidden');
+      });
+
+      elements.closeModal.addEventListener('click', () => {
+        elements.taskModal.classList.add('hidden');
+      });
+
+      elements.cancelTask.addEventListener('click', () => {
+        elements.taskModal.classList.add('hidden');
+      });
+
+      elements.mobileFilterButton.addEventListener('click', () => {
+        elements.mobileFilters.classList.remove('hidden');
+      });
+
+      elements.closeFilters.addEventListener('click', () => {
+        elements.mobileFilters.classList.add('hidden');
+      });
+    }
+
+    // Показать ошибку
+    function showError(message) {
+      alert(`Ошибка: ${message}`);
+    }
+</script>
+</body>
+</html>
